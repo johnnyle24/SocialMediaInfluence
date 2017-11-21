@@ -12,10 +12,10 @@ def deactivate_all_nodes(N):
 def node_influence(n, N):
     N.AddIntAttrDatN(n, 1, 'active')
     influence = 1
-    stack = [n]
+    stack = [n.GetId()]
 
     while stack:
-        v = stack.pop()
+        v = N.GetNI(stack.pop())
         for out_edge in v.GetOutEdges():
             w = N.GetNI(N.GetEI(out_edge).GetDstNId())
 
@@ -45,7 +45,7 @@ def node_influence(n, N):
                 if activation > threshold:
                     N.AddIntAttrDatN(w, 1, 'active')
                     influence += 1
-                    stack.append(w)
+                    stack.append(w.GetId())
 
     return influence
 
@@ -55,6 +55,8 @@ def set_influence(S, N):
 
     influence = 0
     for n in S:
+        n = N.GetNI(n)
+
         # Only measure influence if not already active
         # (if already active, influence would have already been taken into account)
         if N.GetIntAttrDatN(n, 'active') == 0:
@@ -67,7 +69,7 @@ def max_influence_node(S, N):
     max_influence = 0
 
     for n in N.Nodes():
-        if n not in S:
+        if n.GetId() not in S:
             deactivate_all_nodes(N)
 
             # Test the influence of this singular node
@@ -75,7 +77,7 @@ def max_influence_node(S, N):
 
             # Update the node with the best influence
             if influence > max_influence:
-                max_n = n
+                max_n = n.GetId()
                 max_influence = influence
 
     return max_n, max_influence
