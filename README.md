@@ -17,8 +17,6 @@ partition.py
 * **Johnny Le** - [Github](https://github.com/johnnyle24)
 * **Pierce Darragh** - [Github](https://github.com/pdarragh)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
