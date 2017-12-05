@@ -5,7 +5,7 @@ Various heuristics for maximizing influence in social networks
 ## Getting started
 
 ### Installation
-This project requires Snap, [install it here](https://snap.stanford.edu/snappy/)
+This project requires Snap (which only works with python 2.7), [install it here](https://snap.stanford.edu/snappy/)
 
 Then, install the requirements using `pip install -r requirements.txt`
 
