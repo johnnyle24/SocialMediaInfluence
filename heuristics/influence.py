@@ -1,61 +1,70 @@
 import numpy as np
 
 
-def deactivate_all_nodes(N):
-    for n in N.Nodes():
-        N.AddIntAttrDatN(n, 0, 'active')
+def deactivate_all_nodes(network, whitelist=None):
+    if whitelist is None:
+        whitelist = []
+
+    # Whitelist are nodes which should remain active
+    for node in network.Nodes():
+        if node.GetId() in whitelist:
+            network.AddIntAttrDatN(node, 1, 'active')
+        else:
+            network.AddIntAttrDatN(node, 0, 'active')
 
 
-def node_influence(n, N):
-    N.AddIntAttrDatN(n, 1, 'active')
+def node_influence(network, node):
+    network.AddIntAttrDatN(node, 1, 'active')
+    stack = [node.GetId()]
+
     influence = 1
-    stack = [n.GetId()]
-
+    active = [node.GetId()]
     while stack:
-        v = N.GetNI(stack.pop())
-        for out_edge in v.GetOutEdges():
-            w = N.GetNI(N.GetEI(out_edge).GetDstNId())
+        u = network.GetNI(stack.pop())
+        for out_edge in u.GetOutEdges():
+            v = network.GetNI(network.GetEI(out_edge).GetDstNId())
 
             # See if inactive neighbor becomes active
-            if N.GetIntAttrDatN(w, 'active') == 0:
-                threshold = N.GetFltAttrDatN(w, 'threshold')
+            if network.GetIntAttrDatN(v, 'active') == 0:
+                threshold = network.GetFltAttrDatN(v, 'threshold')
 
                 # Generate some edge weights (to potentially use later)
-                edge_weights = np.random.dirichlet(np.ones(w.GetInDeg())) \
-                               * np.random.uniform(0, 1)
+                edge_weights = np.random.dirichlet(np.ones(v.GetInDeg())) * np.random.uniform(0, 1)
                 edge_weights = edge_weights.tolist()
 
                 # Compute the activation
                 activation = 0
-                for in_edge in w.GetInEdges():
-                    u = N.GetEI(in_edge).GetSrcNId()
-                    active = N.GetIntAttrDatN(u, 'active')
-                    weight = N.GetFltAttrDatE(in_edge, 'weight')
+                for in_edge in v.GetInEdges():
+                    w = network.GetEI(in_edge).GetSrcNId()
+                    is_active = network.GetIntAttrDatN(w, 'active')
+                    weight = network.GetFltAttrDatE(in_edge, 'weight')
 
                     if weight == -1:
                         weight = edge_weights.pop()
-                        N.AddFltAttrDatE(in_edge, weight, 'weight')
+                        network.AddFltAttrDatE(in_edge, weight, 'weight')
 
-                    activation += active * weight
+                    activation += is_active * weight
 
                 # Determine if this node becomes active
                 if activation > threshold:
-                    N.AddIntAttrDatN(w, 1, 'active')
+                    network.AddIntAttrDatN(v, 1, 'active')
+                    stack.append(v.GetId())
+
                     influence += 1
-                    stack.append(w.GetId())
+                    active.append(v.GetId())
 
-    return influence
+    return influence, active
 
 
-def set_influence(S, N):
-    deactivate_all_nodes(N)
+def set_influence(network, max_set):
+    deactivate_all_nodes(network)
 
     influence = 0
-    for n in S:
-        n = N.GetNI(n)
+    for node in max_set:
+        node = network.GetNI(node)
 
         # Only measure influence if not already active
         # (if already active, influence would have already been taken into account)
-        if N.GetIntAttrDatN(n, 'active') == 0:
-            influence += node_influence(n, N)
+        if network.GetIntAttrDatN(node, 'active') == 0:
+            influence += node_influence(network, node)[0]
     return influence

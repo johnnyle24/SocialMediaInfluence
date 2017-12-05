@@ -6,19 +6,19 @@ from load import load_networkx_graph, load_snap_graph
 from influence import set_influence
 
 
-def max_influence_set(k, networkx_graph):
-    S = []
+def max_influence_set(network, k):
+    max_set = []
 
     # Partition the graph
-    _, part = partition(networkx_graph, k)
+    _, part = partition(network, k)
 
     # Get the highest degree node in each partition
     for i in range(k):
-        graph = networkx_graph.subgraph(part[i])
+        graph = network.subgraph(part[i])
         max_node, max_degree = max(graph.degree, key=lambda pair: pair[1])
-        S.append(max_node)
+        max_set.append(max_node)
 
-    return S
+    return max_set
 
 
 if __name__ == '__main__':
@@ -26,15 +26,16 @@ if __name__ == '__main__':
     k = int(sys.argv[1])
 
     # Load the graphs
-    networkx_graph = load_networkx_graph('../data/wiki-Vote.txt')
     snap_graph = load_snap_graph('../data/wiki-Vote.txt')
+    networkx_graph = load_networkx_graph('../data/wiki-Vote.txt')
 
     # Partition the graph
     start = time.time()
-    S = max_influence_set(k, networkx_graph)
+    max_set = max_influence_set(networkx_graph, k)
     end = time.time()
-    print('Time to find set: ' + str(end - start))
 
     # Show the influence
-    influence = set_influence(S, snap_graph)
-    print('Influence:        ' + str(influence))
+    influence = set_influence(snap_graph, max_set)
+
+    print('time to find set: ' + str(end - start))
+    print('set influence:    ' + str(influence) + '\n')

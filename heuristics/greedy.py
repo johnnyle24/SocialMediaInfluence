@@ -5,31 +5,49 @@ from load import load_snap_graph
 from influence import deactivate_all_nodes, node_influence, set_influence
 
 
-def max_influence_node(S, N):
-    max_n = None
+def max_influence_node(network, whitelist=None):
+    if whitelist is None:
+        whitelist = []
+
+    max_node = None
+    max_active = []
     max_influence = 0
 
-    for n in N.Nodes():
-        if n.GetId() not in S:
-            deactivate_all_nodes(N)
+    # Check the nodes that haven't been activated
+    for node in network.Nodes():
+        if node.GetId() not in whitelist:
+            deactivate_all_nodes(network, whitelist)
 
             # Test the influence of this singular node
-            influence = node_influence(n, N)
+            influence, active = node_influence(network, node)
 
             # Update the node with the best influence
             if influence > max_influence:
-                max_n = n.GetId()
+                max_node = node.GetId()
+                max_active = active
                 max_influence = influence
 
-    return max_n, max_influence
+    return max_node, max_active, max_influence
 
 
-def max_influence_set(k, N):
-    S = []
+def max_influence_set(network, k):
+    max_set = []
+    whitelist = []
+    influence = 0
+
     for i in range(k):
-        max_n, max_influence = max_influence_node(S, N)
-        S.append(max_n)
-    return S
+        # Find the next best node that hasn't already been activated
+        # (whitelist are activated nodes)
+        max_node, max_active, max_influence = max_influence_node(network, whitelist)
+        max_set.append(max_node)
+        whitelist.extend(max_active)
+        influence += max_influence
+
+        # Print the total influence thus far
+        print('k:            ' + str(i + 1))
+        print('influence:    ' + str(influence) + '\n')
+
+    return max_set
 
 
 if __name__ == '__main__':
@@ -37,14 +55,15 @@ if __name__ == '__main__':
     k = int(sys.argv[1])
 
     # Load the data
-    N = load_snap_graph('../data/wiki-Vote.txt')
+    network = load_snap_graph('../data/wiki-Vote.txt')
 
     # Find the max influence set of size k
     start = time.time()
-    S = max_influence_set(k, N)
+    max_set = max_influence_set(network, k)
     end = time.time()
-    print('Time to find set: ' + str(end - start))
 
     # Measure the influence of the set
-    influence = set_influence(S, N)
-    print('Influence:        ' + str(influence))
+    influence = set_influence(network, max_set)
+
+    print('time to find set: ' + str(end - start))
+    print('set influence:    ' + str(influence) + '\n')
