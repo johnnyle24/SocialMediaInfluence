@@ -1,3 +1,4 @@
+import sys
 import time
 
 from load import load_snap_graph
@@ -33,7 +34,7 @@ def max_influence_set(k, N):
 
 if __name__ == '__main__':
     # Parameters
-    k = 4
+    k = int(sys.argv[1])
 
     # Load the data
     N = load_snap_graph('../data/wiki-Vote.txt')

@@ -1,3 +1,4 @@
+import sys
 import time
 from nxmetis import partition
 
@@ -22,7 +23,7 @@ def max_influence_set(k, networkx_graph):
 
 if __name__ == '__main__':
     # Parameters
-    k = 4
+    k = int(sys.argv[1])
 
     # Load the graphs
     networkx_graph = load_networkx_graph('../data/wiki-Vote.txt')
