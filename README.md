@@ -33,4 +33,7 @@ This project is licensed under the MIT License -
 see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
+* David Kempe, Jon Kleinberg, and Éva Tardos,
+"[Maximizing the Spread of Influence through a Social Network](https://www.cs.cornell.edu/home/kleinber/kdd03-inf.pdf),"
+2003
 * Aditya Bhaskara
