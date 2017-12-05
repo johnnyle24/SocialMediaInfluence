@@ -2,10 +2,14 @@
 
 Various heuristics for maximizing influence in social networks
 
-## How to run
+## Getting started
 
+### Installation
 This project requires Snap, [install it here](https://snap.stanford.edu/snappy/)
 
+Then, install the requirements using `pip install -r requirements.txt`
+
+### How to run
 The following files will run various heuristics
 ```
 greedy.py
