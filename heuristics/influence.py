@@ -21,8 +21,8 @@ def node_influence(network, node):
     active = [node.GetId()]
     while stack:
         u = network.GetNI(stack.pop())
-        for out_edge in u.GetOutEdges():
-            v = network.GetNI(network.GetEI(out_edge).GetDstNId())
+        for out_edge in range(u.GetOutDeg()):
+            v = network.GetNI(u.GetOutNId(out_edge))
 
             # See if inactive neighbor becomes active
             if network.GetIntAttrDatN(v, 'active') == 0:
@@ -34,14 +34,15 @@ def node_influence(network, node):
 
                 # Compute the activation
                 activation = 0
-                for in_edge in v.GetInEdges():
-                    w = network.GetEI(in_edge).GetSrcNId()
+                for in_edge in range(v.GetInDeg()):
+                    w = v.GetInNId(in_edge)
+                    edge = network.GetEI(w, v.GetId())
                     is_active = network.GetIntAttrDatN(w, 'active')
-                    weight = network.GetFltAttrDatE(in_edge, 'weight')
+                    weight = network.GetFltAttrDatE(edge, 'weight')
 
                     if weight == -1:
                         weight = edge_weights.pop()
-                        network.AddFltAttrDatE(in_edge, weight, 'weight')
+                        network.AddFltAttrDatE(edge, weight, 'weight')
 
                     activation += is_active * weight
 
