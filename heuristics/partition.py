@@ -29,13 +29,20 @@ if __name__ == '__main__':
     snap_graph = load_snap_graph('../data/wiki-Vote.txt')
     networkx_graph = load_networkx_graph('../data/wiki-Vote.txt')
 
-    # Partition the graph
+    # Measure the time
     start = time.time()
-    max_set = max_influence_set(networkx_graph, k)
+
+    # Partition for each k and compute the best set
+    for i in range(1, k + 1):
+        max_set = max_influence_set(networkx_graph, i)
+
+        # Show the influence
+        influence = set_influence(snap_graph, max_set)
+        
+        print('k:         ' + str(i))
+        print('max set:   ' + str(max_set))
+        print('influence: ' + str(influence) + '\n')
+
     end = time.time()
+    print('time:      ' + str(end - start))
 
-    # Show the influence
-    influence = set_influence(snap_graph, max_set)
-
-    print('time to find set: ' + str(end - start))
-    print('set influence:    ' + str(influence) + '\n')

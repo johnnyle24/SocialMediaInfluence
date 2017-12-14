@@ -44,8 +44,9 @@ def max_influence_set(network, k):
         influence += max_influence
 
         # Print the total influence thus far
-        print('k:            ' + str(i + 1))
-        print('influence:    ' + str(influence) + '\n')
+        print('k:         ' + str(i + 1))
+        print('max set:   ' + str(max_set))
+        print('influence: ' + str(influence) + '\n')
 
     return max_set
 
@@ -60,10 +61,9 @@ if __name__ == '__main__':
     # Find the max influence set of size k
     start = time.time()
     max_set = max_influence_set(network, k)
-    end = time.time()
 
     # Measure the influence of the set
     influence = set_influence(network, max_set)
 
-    print('time to find set: ' + str(end - start))
-    print('set influence:    ' + str(influence) + '\n')
+    end = time.time()
+    print('time:      ' + str(end - start))
