@@ -34,14 +34,21 @@ if __name__ == '__main__':
 
     # Partition for each k and compute the best set
     for i in range(1, k + 1):
-        max_set = max_influence_set(networkx_graph, i)
 
-        # Show the influence
-        influence = set_influence(snap_graph, max_set)
+        influence_total = 0
+
+        for j in range(10):
+
+            max_set = max_influence_set(networkx_graph, i)
+
+            # Show the influence
+            influence = set_influence(snap_graph, max_set)
+
+            influence_total += influence
         
         print('k:         ' + str(i))
         print('max set:   ' + str(max_set))
-        print('influence: ' + str(influence) + '\n')
+        print('influence avg: ' + str(float(influence_total)/10) + '\n')
 
     end = time.time()
     print('time:      ' + str(end - start))
