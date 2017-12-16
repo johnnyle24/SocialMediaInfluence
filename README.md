@@ -10,7 +10,7 @@ This project requires Snap
 [install it here](https://snap.stanford.edu/snappy/)
 
 It also requires networkx-metis (for which the pip install does not work),
-[install it here](https://snap.stanford.edu/snappy/)
+[install it here](https://github.com/networkx/networkx-metis)
 
 Then, install the requirements using `pip install -r requirements.txt`
 
