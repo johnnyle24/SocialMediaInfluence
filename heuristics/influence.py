@@ -1,4 +1,5 @@
 import numpy as np
+import pdb as p
 
 
 def deactivate_all_nodes(network, whitelist=None):
@@ -29,7 +30,16 @@ def node_influence(network, node):
                 threshold = network.GetFltAttrDatN(v, 'threshold')
 
                 # Generate some edge weights (to potentially use later)
-                edge_weights = np.random.dirichlet(np.ones(v.GetInDeg())) * np.random.uniform(0, 1)
+                # edge_weights = np.random.dirichlet(np.ones(v.GetInDeg())) * np.random.uniform(0, 1)
+
+                # edge_weights = [1/v.GetInDeg()] * v.GetInDeg()
+
+                edge_weights = np.ones(v.GetInDeg())
+                for i in range(0, v.GetInDeg()):
+                    edge_weights[i] = float(1)/v.GetInDeg();
+                    # p.set_trace();
+                    # print(edge_weights[i])
+
                 edge_weights = edge_weights.tolist()
 
                 # Compute the activation
