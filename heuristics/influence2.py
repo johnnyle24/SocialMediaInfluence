@@ -27,42 +27,62 @@ def node_influence(network, node):
 
             # See if inactive neighbor becomes active
             if network.GetIntAttrDatN(v, 'active') == 0:
-                threshold = network.GetFltAttrDatN(v, 'threshold')
 
-                # Generate some edge weights (to potentially use later)
-                # edge_weights = np.random.dirichlet(np.ones(v.GetInDeg())) * np.random.uniform(0, 1)
+                edge = network.GetEI(u.GetId(), v.GetId())
 
-                # edge_weights = [1/v.GetInDeg()] * v.GetInDeg()
+                probability = network.GetFltAttrDatE(edge, 'weight')
 
-                edge_weights = np.ones(v.GetInDeg())
-                for i in range(0, v.GetInDeg()):
-                    edge_weights[i] = float(1)/v.GetInDeg();
-                    # p.set_trace();
-                    # print(edge_weights[i])
+                if probability == -1:
+                    # Calculate edge activation probability
+                    # probability = np.random.uniform(0,1)
+                    probability = 0.10
+                    network.AddFltAttrDatE(edge, probability, 'weight')
 
-                edge_weights = edge_weights.tolist()
+                # Check the value of the biased coin
+                flipped_value = np.random.uniform(0,1)
 
-                # Compute the activation
-                activation = 0
-                for in_edge in range(v.GetInDeg()):
-                    w = v.GetInNId(in_edge)
-                    edge = network.GetEI(w, v.GetId())
-                    is_active = network.GetIntAttrDatN(w, 'active')
-                    weight = network.GetFltAttrDatE(edge, 'weight')
-
-                    if weight == -1:
-                        weight = edge_weights.pop()
-                        network.AddFltAttrDatE(edge, weight, 'weight')
-
-                    activation += is_active * weight
-
-                # Determine if this node becomes active
-                if activation > threshold:
+                # Check if the value is within the probability bound
+                if(flipped_value <= probability):
                     network.AddIntAttrDatN(v, 1, 'active')
                     stack.append(v.GetId())
 
                     influence += 1
                     active.append(v.GetId())
+
+
+
+
+            #     threshold = network.GetFltAttrDatN(v, 'threshold')
+
+            #     edge_weights = np.ones(v.GetInDeg())
+            #     for i in range(0, v.GetInDeg()):
+            #         edge_weights[i] = float(1)/v.GetInDeg();
+            #         # p.set_trace();
+            #         # print(edge_weights[i])
+
+            #     edge_weights = edge_weights.tolist()
+
+            #     # Compute the activation
+            #     activation = 0
+            #     for in_edge in range(v.GetInDeg()):
+            #         w = v.GetInNId(in_edge)
+            #         edge = network.GetEI(w, v.GetId())
+            #         is_active = network.GetIntAttrDatN(w, 'active')
+            #         weight = network.GetFltAttrDatE(edge, 'weight')
+
+            #         if weight == -1:
+            #             weight = edge_weights.pop()
+            #             network.AddFltAttrDatE(edge, weight, 'weight')
+
+            #         activation += is_active * weight
+
+            #     # Determine if this node becomes active
+            #     if activation > threshold:
+            #         network.AddIntAttrDatN(v, 1, 'active')
+            #         stack.append(v.GetId())
+
+            #         influence += 1
+            #         active.append(v.GetId())
 
     return influence, active
 
