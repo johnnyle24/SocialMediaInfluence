@@ -3,7 +3,7 @@ import time
 from nxmetis import partition
 
 from load import load_networkx_graph, load_snap_graph
-from influence import set_influence
+from independent_cascade import set_influence
 
 
 def max_influence_set(network, k):
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # Partition for each k and compute the best set
     for i in range(1, k + 1):
-
+        
         influence_total = 0
 
         for j in range(10):

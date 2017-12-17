@@ -18,9 +18,17 @@ Then, install the requirements using `pip install -r requirements.txt`
 The following files will run various heuristics, and output the influence
 of the best found set.  The input parameter *k* corresponds to the size
 of the initial set of activated nodes.
+
 ```
-python greedy.py [k]
-python partition.py [k]
+python greedy_linear.py [k]
+python partition_linear.py [k]
+```
+
+You can also use the independent cascade model by doing:
+
+```
+python greedy_cascade.py [k]
+python partition_cascade.py [k]
 ```
 
 ## Authors

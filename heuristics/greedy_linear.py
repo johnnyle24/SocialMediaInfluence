@@ -2,7 +2,7 @@ import sys
 import time
 
 from load import load_snap_graph
-from influence import deactivate_all_nodes, node_influence, set_influence
+from linear_threshold import deactivate_all_nodes, node_influence, set_influence
 
 
 def max_influence_node(network, whitelist=None):
